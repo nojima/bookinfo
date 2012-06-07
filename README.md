@@ -3,11 +3,16 @@ bookinfo
 
 ISBN を与えると Amazon から本の情報を取ってくるスクリプト．
 
+
 ## インストール
 
-Ruby 1.9 が必要です．Debian や Ubuntu の場合は以下のコマンドでインストール可能です．
+* Ruby 1.9 が必要です．Debian や Ubuntu の場合は以下のコマンドでインストール可能です．
 
     $ sudo apt-get install ruby1.9.1 libruby1.9.1
+
+* `config/amazon.yml` に Product Advertising API の key と secret と AssociateTag を記述する必要があります．
+  `config/amazon.yml.example` を参考に記述してください．
+
 
 ## 使い方
 
