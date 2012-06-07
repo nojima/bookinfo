@@ -3,7 +3,7 @@
 require 'yaml'
 require 'optparse'
 require 'logger'
-require_relative 'amazon'
+require_relative 'lib/amazon'
 
 class BookInfo
   def initialize
@@ -35,7 +35,7 @@ class BookInfo
   end
 
   def read_config
-    YAML.load(IO.read(File.dirname(__FILE__) + '/config.yml'))
+    YAML.load(IO.read(File.dirname(__FILE__) + '/config/amazon.yml'))
   end
 
   def write_header(output, attrs)

@@ -17,7 +17,7 @@ tmp
 _yardoc
 doc/
 
-config.yml
+config/*.yml
 
 # Vim files
 .*.swp
