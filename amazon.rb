@@ -31,13 +31,15 @@ class Amazon
       open(uri) do |result|
         xml = result.read
         doc = REXML::Document.new(xml)
+        index = 0
         doc.elements.each("/ItemLookupResponse/Items/Item") do |item|
-          info = {}
+          info = { isbn: isbns[index] }
           [:author, :manufacturer, :title].each do |attr|
             info[attr] = get_text_if_exists(item, "ItemAttributes/#{attr.capitalize}")
           end
           info[:image_uri] = get_text_if_exists(item, "LargeImage/URL")
           yield info
+          index += 1
         end
       end
     end
