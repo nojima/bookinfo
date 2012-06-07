@@ -18,3 +18,7 @@ _yardoc
 doc/
 
 config.yml
+
+# Vim files
+.*.swp
+*~
