@@ -6,6 +6,8 @@ require 'logger'
 require 'open-uri'
 require_relative 'lib/amazon'
 
+Version = '1.0.0'
+
 class BookInfo
   def initialize
     @log = Logger.new($stderr)
@@ -23,7 +25,7 @@ class BookInfo
     amazon = Amazon.new(read_config)
     write_header(output, attrs) if @header
     amazon.each_books(isbn_list) do |info|
-      @log.info "Fetched: #{info[:isbn]}"
+      @log.info "Book Info Fetched: #{info[:isbn]}"
       write_row(output, attrs, info)
       write_image(info[:isbn], info[:image_uri]) if @image_prefix
     end
@@ -31,9 +33,9 @@ class BookInfo
 
   def parse_options
     opt = OptionParser.new
-    opt.on('-v', '--verbose') { @log.level = Logger::INFO }
-    opt.on('--header') { @header = true }
-    opt.on('--fetch-images PREFIX') {|str| @image_prefix = str }
+    opt.on('-v', '--verbose', 'Output log') { @log.level = Logger::INFO }
+    opt.on('--[no-]header', 'Output header') {|f| @header = f }
+    opt.on('--fetch-images=PREFIX', 'Specify image download directory') {|str| @image_prefix = str }
     opt.parse!(ARGV)
   end
 
@@ -51,9 +53,11 @@ class BookInfo
 
   def write_image(isbn, image_uri)
     open(image_uri) do |image_input|
+      image = image_input.read
       image_filename = File.join(@image_prefix, "#{isbn}#{File.extname(image_uri)}")
       open(image_filename, 'wb') do |image_output|
-        image_output.write(image_input.read)
+        @log.info "Image Fetched: #{image_uri}"
+        image_output.write(image)
       end
     end
   end
