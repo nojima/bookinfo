@@ -3,6 +3,7 @@
 require 'yaml'
 require 'optparse'
 require 'logger'
+require 'open-uri'
 require_relative 'lib/amazon'
 
 class BookInfo
@@ -16,7 +17,7 @@ class BookInfo
 
     input = $stdin
     output = $stdout
-    attrs = [:isbn, :author, :manufacturer, :title, :image_uri]
+    attrs = [:isbn, :author, :manufacturer, :title]
     isbn_list = input.read.split.map(&:to_i)
 
     amazon = Amazon.new(read_config)
@@ -24,6 +25,7 @@ class BookInfo
     amazon.each_books(isbn_list) do |info|
       @log.info "Fetched: #{info[:isbn]}"
       write_row(output, attrs, info)
+      write_image(info[:isbn], info[:image_uri]) if @image_prefix
     end
   end
 
@@ -31,6 +33,7 @@ class BookInfo
     opt = OptionParser.new
     opt.on('-v', '--verbose') { @log.level = Logger::INFO }
     opt.on('--header') { @header = true }
+    opt.on('--fetch-images PREFIX') {|str| @image_prefix = str }
     opt.parse!(ARGV)
   end
 
@@ -44,6 +47,15 @@ class BookInfo
 
   def write_row(output, attrs, info)
     output.puts info.values_at(*attrs).join("\t")
+  end
+
+  def write_image(isbn, image_uri)
+    open(image_uri) do |image_input|
+      image_filename = File.join(@image_prefix, "#{isbn}#{File.extname(image_uri)}")
+      open(image_filename, 'wb') do |image_output|
+        image_output.write(image_input.read)
+      end
+    end
   end
 end
 
