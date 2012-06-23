@@ -4,7 +4,9 @@ require 'yaml'
 require 'optparse'
 require 'logger'
 require 'open-uri'
-require_relative 'lib/amazon'
+
+$LOAD_PATH.push(File.expand_path('../lib', File.dirname(__FILE__)))
+require 'amazon'
 
 Version = '1.0.0'
 
@@ -40,7 +42,7 @@ class BookInfo
   end
 
   def read_config
-    YAML.load(IO.read(File.dirname(__FILE__) + '/config/amazon.yml'))
+    YAML.load(IO.read(File.expand_path('../config/amazon.yml', File.dirname(__FILE__))))
   end
 
   def write_header(output, attrs)
