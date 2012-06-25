@@ -21,7 +21,7 @@ class BookInfo
 
     input = $stdin
     output = $stdout
-    attrs = [:isbn, :author, :manufacturer, :title]
+    attrs = [:isbn, :title, :author, :manufacturer, :creators]
     isbn_list = input.read.split.map(&:to_i)
 
     amazon = Amazon.new(read_config)

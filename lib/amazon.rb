@@ -5,6 +5,13 @@ require 'open-uri'
 require 'digest/hmac'
 require 'rexml/document'
 
+Creator = Struct.new(:name, :role)
+class Creator
+  def to_s
+    "#{name}(#{role})"
+  end
+end
+
 class Amazon
   # config として与えられた key, secret, assoc_tag を指定して初期化する
   def initialize(config)
@@ -30,6 +37,9 @@ class Amazon
 
       open(uri) do |result|
         xml = result.read
+        open('/tmp/amazon.rb.xml', 'w') do |f|
+          f.write(xml)
+        end
         doc = REXML::Document.new(xml)
         index = 0
         doc.elements.each("/ItemLookupResponse/Items/Item") do |item|
@@ -37,6 +47,13 @@ class Amazon
           [:author, :manufacturer, :title].each do |attr|
             info[attr] = get_text_if_exists(item, "ItemAttributes/#{attr.capitalize}")
           end
+          creators = []
+          item.elements.each("ItemAttributes/Creator") do |creator|
+            name = creator.text && creator.text.gsub("\t", " ")
+            role = creator.attributes['Role']
+            creators.push(Creator.new(name, role))
+          end
+          info[:creators] = creators
           info[:image_uri] = get_text_if_exists(item, "LargeImage/URL")
           yield info
           index += 1
