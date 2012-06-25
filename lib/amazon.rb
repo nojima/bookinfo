@@ -14,7 +14,7 @@ class Amazon
   end
 
   # 指定された ISBN の本の情報を取得する
-  def each_books(isbn_list)
+  def lookup_books(isbn_list)
     max_request_isbn_count = 10
 
     isbn_list.each_slice(max_request_isbn_count) do |isbns|

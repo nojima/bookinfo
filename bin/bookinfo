@@ -26,7 +26,7 @@ class BookInfo
 
     amazon = Amazon.new(read_config)
     write_header(output, attrs) if @header
-    amazon.each_books(isbn_list) do |info|
+    amazon.lookup_books(isbn_list) do |info|
       @log.info "Book Info Fetched: #{info[:isbn]}"
       write_row(output, attrs, info)
       write_image(info[:isbn], info[:image_uri]) if info[:image_uri] && @image_prefix
