@@ -46,6 +46,12 @@ class Amazon
     self
   end
 
+  def lookup_book(isbn)
+    result = nil
+    lookup_books([isbn]) {|info| result = info}
+    result
+  end
+
   def get_text_if_exists(item, selector)
     e = item.elements[selector]
     e && e.text && e.text.gsub("\t", " ")
