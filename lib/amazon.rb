@@ -66,6 +66,7 @@ class Amazon
   def lookup_book(isbn)
     result = nil
     lookup_books([isbn]) {|info| result = info}
+    result[:isbn] = isbn if result
     result
   end
 
