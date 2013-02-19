@@ -37,9 +37,6 @@ class Amazon
 
       open(uri) do |result|
         xml = result.read
-        open('/tmp/amazon.rb.xml', 'w') do |f|
-          f.write(xml)
-        end
         doc = REXML::Document.new(xml)
         index = 0
         doc.elements.each("/ItemLookupResponse/Items/Item") do |item|
